@@ -109,7 +109,6 @@ export default function Edit({ attributes, setAttributes }) {
 		const { getEntityRecords } = select('core');
 		return getEntityRecords('taxonomy', 'product_category', { per_page: -1 });
 	}, []);
-	// console.log(customTaxonomyTerms);
 
 
 
@@ -126,7 +125,6 @@ export default function Edit({ attributes, setAttributes }) {
 			});
 		}
 	}, [customTaxonomy]);
-	// console.log(typeof(customTaxonomy));
 
 
 
@@ -153,14 +151,16 @@ export default function Edit({ attributes, setAttributes }) {
 			console.log('Product meta updated:', response);
 		});
 	}
-	// console.log(products);
-	// console.log(typeof(products));
+
 
 
 	const [sellcountproduct, setSellcountproduct] = useState(meta.sell_count || '');
 	const [sellproducts, setSellProducts] = useState([]);
 	setAttributes({ mostsellvalue: sellcountproduct })
-	// console.log(mostsellvalue);
+
+	useEffect(() => {
+		setproductmetavalue(1);
+	  }, []);
 
 
 	const setproductmetavalue = (value) => {

@@ -70,7 +70,6 @@ function gutenberg_examples_dynamic_render_callback($attributes){
       
       return $content;
 }
-// $mostsellproducts = isset($attributes['mostsellproducts']) ? $attributes['mostsellproducts'] : '';
 
 
 
