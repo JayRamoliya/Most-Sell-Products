@@ -108,8 +108,6 @@ function Edit({
       per_page: -1
     });
   }, []);
-  // console.log(customTaxonomyTerms);
-
   const [products, setProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     if (customTaxonomy) {
@@ -124,8 +122,6 @@ function Edit({
       });
     }
   }, [customTaxonomy]);
-  // console.log(typeof(customTaxonomy));
-
   const posts = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
     return select('core').getEntityRecords('postType', 'products');
   }, []);
@@ -148,17 +144,15 @@ function Edit({
       console.log('Product meta updated:', response);
     });
   };
-  // console.log(products);
-  // console.log(typeof(products));
-
   const [sellcountproduct, setSellcountproduct] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(meta.sell_count || '');
   const [sellproducts, setSellProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
-  setAttributes({
-    mostsellvalue: sellcountproduct
-  });
-  // console.log(mostsellvalue);
-
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    setproductmetavalue(sellcountproduct);
+  }, []);
   const setproductmetavalue = value => {
+    setAttributes({
+      mostsellvalue: value
+    });
     if (sellcountproduct) {
       wp.apiFetch({
         path: `/cr/v1/mostproducts/${value}`

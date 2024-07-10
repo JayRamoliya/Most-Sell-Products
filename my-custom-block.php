@@ -41,14 +41,18 @@ add_action('init', 'create_block_my_custom_block_block_init');
 
 function gutenberg_examples_dynamic_render_callback($attributes){
 
-    $mostsellvalue = isset($attributes['mostsellvalue']) ? $attributes['mostsellvalue'] : '';
+    $mostsellvalue = isset($attributes['mostsellvalue']) ? $attributes['mostsellvalue'] : '1';
 
     $api_url = 'http://localhost/wordpress/wp-json/cr/v1/mostproducts/' . $mostsellvalue;
     $response = wp_remote_get($api_url);
     $products = json_decode($response['body'], true);
 
+    // $transient_name = 'products_transient';
+    // set_transient($transient_name, $products, 86400); 
+
+    // $tra_products = get_transient($transient_name);
     // echo '<pre>';
-    // print_r($products);
+    // print_r($tra_products);
     // echo '</pre>';
 
 
@@ -67,16 +71,12 @@ function gutenberg_examples_dynamic_render_callback($attributes){
       } else {
         $content = '<p>No products found</p>';
       }
-      
       return $content;
 }
 
 
 
 // ==============================================================================
-
-
-
 
 
 

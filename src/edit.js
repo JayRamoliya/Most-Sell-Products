@@ -156,14 +156,13 @@ export default function Edit({ attributes, setAttributes }) {
 
 	const [sellcountproduct, setSellcountproduct] = useState(meta.sell_count || '');
 	const [sellproducts, setSellProducts] = useState([]);
-	setAttributes({ mostsellvalue: sellcountproduct })
 
 	useEffect(() => {
-		setproductmetavalue(1);
-	  }, []);
-
+		setproductmetavalue(sellcountproduct);
+	}, []);
 
 	const setproductmetavalue = (value) => {
+		setAttributes({ mostsellvalue: value })
 		if (sellcountproduct) {
 			wp.apiFetch({
 				path: `/cr/v1/mostproducts/${value}`
@@ -204,9 +203,6 @@ export default function Edit({ attributes, setAttributes }) {
 	const toggleNofollow = () => {
 		setAttributes({ hasLinkNofollow: !hasLinkNofollow })
 	}
-
-
-
 
 	return (
 		<div {...useBlockProps()}>
