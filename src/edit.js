@@ -57,6 +57,7 @@ export default function Edit({ attributes, setAttributes }) {
 
 	// console.log(content);
 
+
 	const postType = useSelect(
 		(select) => select('core/editor').getCurrentPostType(),
 		[]
@@ -111,7 +112,6 @@ export default function Edit({ attributes, setAttributes }) {
 	}, []);
 
 
-
 	const [products, setProducts] = useState([]);
 
 	useEffect(() => {
@@ -156,6 +156,7 @@ export default function Edit({ attributes, setAttributes }) {
 
 	const [sellcountproduct, setSellcountproduct] = useState(meta.sell_count || '');
 	const [sellproducts, setSellProducts] = useState([]);
+	// console.log(typeof(sellcountproduct));
 
 	useEffect(() => {
 		setproductmetavalue(sellcountproduct);
@@ -173,6 +174,11 @@ export default function Edit({ attributes, setAttributes }) {
 		}
 	}
 
+	// wp.data.dispatch('core/editor').editPost({
+	// 	meta: {
+	// 		mostsellproducts: 'this is the meta'
+	// 	}
+	// });
 
 
 	const onChangeContent = (newContent) => {
@@ -204,8 +210,15 @@ export default function Edit({ attributes, setAttributes }) {
 		setAttributes({ hasLinkNofollow: !hasLinkNofollow })
 	}
 
+
+
+	const blockcount = wp.data.select('core/block-editor').getBlocks().length;
+	// wp.data.select("core/block-editor").getBlockCount()
+
+	
 	return (
 		<div {...useBlockProps()}>
+		<p>Block Count: {blockcount}</p>
 
 			<BlockControls>
 				<AlignmentControl
@@ -353,6 +366,8 @@ export default function Edit({ attributes, setAttributes }) {
 			</ul> */}
 
 
+			
+
 			<ul>
 				{sellproducts && sellproducts.length > 0 ? sellproducts.map(product => (
 					<div key={product.id}>
@@ -395,3 +410,9 @@ export default function Edit({ attributes, setAttributes }) {
 		</div>
 	);
 }
+
+
+
+// getAllowedBlocks
+// wp.data.select("core/block-editor").getBlockCount()
+// const blockCount = wp.data.select('core/block-editor').getBlocks().length;

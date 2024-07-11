@@ -55,6 +55,7 @@ function gutenberg_examples_dynamic_render_callback($attributes){
     // print_r($tra_products);
     // echo '</pre>';
 
+    // update_post_meta(855, 'mostsellproducts', "jay");
 
     if(is_array($products)){
         $content = '<ul>';
@@ -70,17 +71,14 @@ function gutenberg_examples_dynamic_render_callback($attributes){
         $content .= '</ul>';
       } else {
         $content = '<p>No products found</p>';
-      }
-      return $content;
+    }
+    return $content;
 }
 
 
 
-// ==============================================================================
 
-
-
-
+// =============================================================================
 
 
 
@@ -100,3 +98,6 @@ function my_plugin_register_meta()
     ]);
 }
 add_action('init', 'my_plugin_register_meta');
+
+
+
