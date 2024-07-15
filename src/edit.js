@@ -21,6 +21,7 @@ import {
 
 
 
+
 import { useEntityProp, useEntityId } from '@wordpress/core-data';
 
 
@@ -55,19 +56,38 @@ import { __experimentalInputControl as InputControl } from '@wordpress/component
 export default function Edit({ attributes, setAttributes }) {
 	const { title, content, postMeta, customTaxonomy, align, textColor, backgroundColor, kaLink, linkLabel, hasLinkNofollow, productarr, sellcounter, mostsellproducts, mostsellvalue } = attributes;
 
-	// console.log(content);
+	// var poid = acf.get('post_id');
+	// console.log(poid);
+
+	// var field = acf.getField('field_669108d710cb4');
+	// console.log(field.data);
+
+	// var field = acf.getField('field_669108d710cb4');
+	// var fieldValue = field.getValue();
+	// console.log(fieldValue);
 
 
+	var field = acf.getField('field_669108d710cb4');
+	var fieldValue = field.getValue();
+
+	// const [fieldValue, setFieldValue] = useState(fieldValue1);
+
+
+
+	// get post type using core/editor store
 	const postType = useSelect(
 		(select) => select('core/editor').getCurrentPostType(),
 		[]
 	);
 	// console.log(postType);
 
+
+	// get post id using core/editor store
 	const postId = wp.data.select("core/editor").getCurrentPostId();
 	// console.log(postId);
 
 
+	// get meta data using core/editore store
 	const meta = useSelect(
 		(select) => {
 			if (postId) {
@@ -80,18 +100,15 @@ export default function Edit({ attributes, setAttributes }) {
 	// console.log(meta);
 
 
-
-	// jQuery('.editor-post-publish-button__button.is-primary').on('click', function () {
-	// 	// alert('click')
-	// 	// console.log('click');
-	// });
-
-
-
-
 	// const { editPost } = useDispatch('core/editor');
+
+
+	// create a state and set meta sell count value
 	const [sellCount, setSellCount] = useState(meta.sell_count || '');
 	// console.log(typeof(sellCount));
+
+
+	// set sell count value in attributes
 	setAttributes({ sellcounter: sellCount })
 
 
@@ -99,21 +116,26 @@ export default function Edit({ attributes, setAttributes }) {
 	// 	setSellCount(meta.sell_count || '');
 	// }, [meta.sell_count]);
 
+
+	// set meta sell count value here onchange event
 	// const updateMetaValue = (value) => {
 	// 	setSellCount(value);
 	// 	editPost({ meta: { ...meta, sell_count: value } });
 	// };
 
 
-
+	// get taxonomy here using core store
 	const customTaxonomyTerms = useSelect((select) => {
 		const { getEntityRecords } = select('core');
 		return getEntityRecords('taxonomy', 'product_category', { per_page: -1 });
 	}, []);
 
 
+	// create a state 
 	const [products, setProducts] = useState([]);
 
+
+	// here get taxonomy 
 	useEffect(() => {
 		if (customTaxonomy) {
 			wp.apiFetch({
@@ -127,17 +149,17 @@ export default function Edit({ attributes, setAttributes }) {
 	}, [customTaxonomy]);
 
 
-
+	// create a post using post types
 	const posts = useSelect((select) => {
 		return select('core').getEntityRecords('postType', 'products');
 	}, []);
 
 
-
+	// here set new value meta sell count
 	const setmetavalue = (value) => {
 		setAttributes({ sellcounter: value })
 		let testsell = jQuery('#sell_count[name="sell_count"]').val(value)
-		// console.log(testsell);
+
 		setSellCount(value);
 		wp.apiFetch({
 			path: `/wp/v2/products/${postId}`,
@@ -153,15 +175,19 @@ export default function Edit({ attributes, setAttributes }) {
 	}
 
 
-
+	// here create a state
 	const [sellcountproduct, setSellcountproduct] = useState(meta.sell_count || '');
 	const [sellproducts, setSellProducts] = useState([]);
 	// console.log(typeof(sellcountproduct));
 
+
+	// load when page reload
 	useEffect(() => {
 		setproductmetavalue(sellcountproduct);
 	}, []);
 
+
+	// get products using rest api
 	const setproductmetavalue = (value) => {
 		setAttributes({ mostsellvalue: value })
 		if (sellcountproduct) {
@@ -173,12 +199,6 @@ export default function Edit({ attributes, setAttributes }) {
 			});
 		}
 	}
-
-	// wp.data.dispatch('core/editor').editPost({
-	// 	meta: {
-	// 		mostsellproducts: 'this is the meta'
-	// 	}
-	// });
 
 
 	const onChangeContent = (newContent) => {
@@ -192,33 +212,27 @@ export default function Edit({ attributes, setAttributes }) {
 	const onChangeBackgroundColor = (newBackgroundColor) => {
 		setAttributes({ backgroundColor: newBackgroundColor })
 	}
-
 	const onChangeTextColor = (newTextColor) => {
 		setAttributes({ textColor: newTextColor })
 	}
-
-
 	const onChangeKaLink = (newKaLink) => {
 		setAttributes({ kaLink: newKaLink === undefined ? '' : newKaLink })
 	}
-
 	const onChangeLinkLabel = (newLinkLabel) => {
 		setAttributes({ linkLabel: newLinkLabel === undefined ? '' : newLinkLabel })
 	}
-
 	const toggleNofollow = () => {
 		setAttributes({ hasLinkNofollow: !hasLinkNofollow })
 	}
 
 
-
-	const blockcount = wp.data.select('core/block-editor').getBlocks().length;
+	// const blockcount = wp.data.select('core/block-editor').getBlocks().length;
 	// wp.data.select("core/block-editor").getBlockCount()
 
 	
+
 	return (
 		<div {...useBlockProps()}>
-		<p>Block Count: {blockcount}</p>
 
 			<BlockControls>
 				<AlignmentControl
@@ -305,6 +319,20 @@ export default function Edit({ attributes, setAttributes }) {
 					})}
 				/> */}
 
+				<TextControl
+					label="My Custom Field"
+					value={fieldValue}
+					onChange={(newValue) => field.setValue(newValue)}
+				/>
+
+				{/* <TextControl
+					label="My Custom Field"
+					value={fieldValue}
+					onChange={(newValue) => {
+						setFieldValue(newValue);
+						acf_update_field('field_669108d710cb4', newValue);
+					}}
+				/> */}
 
 				{/* <TextControl
 					label="Sell Count"
@@ -313,13 +341,13 @@ export default function Edit({ attributes, setAttributes }) {
 					onChange={(value) => setmetavalue(value)}
 				/> */}
 
-
 				<TextControl
 					label="Most Sell Products"
 					value={sellcountproduct}
 					onChange={(value) => {
 						setSellcountproduct(value);
 						setproductmetavalue(value);
+						setmetavalue(value);
 					}}
 				/>
 
@@ -366,7 +394,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</ul> */}
 
 
-			
+
 
 			<ul>
 				{sellproducts && sellproducts.length > 0 ? sellproducts.map(product => (

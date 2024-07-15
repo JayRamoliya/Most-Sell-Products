@@ -63,14 +63,30 @@ function Edit({
     mostsellvalue
   } = attributes;
 
-  // console.log(content);
+  // var poid = acf.get('post_id');
+  // console.log(poid);
 
+  // var field = acf.getField('field_669108d710cb4');
+  // console.log(field.data);
+
+  // var field = acf.getField('field_669108d710cb4');
+  // var fieldValue = field.getValue();
+  // console.log(fieldValue);
+
+  var field = acf.getField('field_669108d710cb4');
+  var fieldValue = field.getValue();
+
+  // const [fieldValue, setFieldValue] = useState(fieldValue1);
+
+  // get post type using core/editor store
   const postType = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => select('core/editor').getCurrentPostType(), []);
   // console.log(postType);
 
+  // get post id using core/editor store
   const postId = wp.data.select("core/editor").getCurrentPostId();
   // console.log(postId);
 
+  // get meta data using core/editore store
   const meta = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
     if (postId) {
       return select('core/editor').getEditedPostAttribute('meta');
@@ -79,14 +95,13 @@ function Edit({
   }, [postId]);
   // console.log(meta);
 
-  // jQuery('.editor-post-publish-button__button.is-primary').on('click', function () {
-  // 	// alert('click')
-  // 	// console.log('click');
-  // });
-
   // const { editPost } = useDispatch('core/editor');
+
+  // create a state and set meta sell count value
   const [sellCount, setSellCount] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(meta.sell_count || '');
   // console.log(typeof(sellCount));
+
+  // set sell count value in attributes
   setAttributes({
     sellcounter: sellCount
   });
@@ -95,11 +110,13 @@ function Edit({
   // 	setSellCount(meta.sell_count || '');
   // }, [meta.sell_count]);
 
+  // set meta sell count value here onchange event
   // const updateMetaValue = (value) => {
   // 	setSellCount(value);
   // 	editPost({ meta: { ...meta, sell_count: value } });
   // };
 
+  // get taxonomy here using core store
   const customTaxonomyTerms = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
     const {
       getEntityRecords
@@ -108,7 +125,11 @@ function Edit({
       per_page: -1
     });
   }, []);
+
+  // create a state 
   const [products, setProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
+
+  // here get taxonomy 
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     if (customTaxonomy) {
       wp.apiFetch({
@@ -122,15 +143,18 @@ function Edit({
       });
     }
   }, [customTaxonomy]);
+
+  // create a post using post types
   const posts = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_7__.useSelect)(select => {
     return select('core').getEntityRecords('postType', 'products');
   }, []);
+
+  // here set new value meta sell count
   const setmetavalue = value => {
     setAttributes({
       sellcounter: value
     });
     let testsell = jQuery('#sell_count[name="sell_count"]').val(value);
-    // console.log(testsell);
     setSellCount(value);
     wp.apiFetch({
       path: `/wp/v2/products/${postId}`,
@@ -144,13 +168,18 @@ function Edit({
       console.log('Product meta updated:', response);
     });
   };
+
+  // here create a state
   const [sellcountproduct, setSellcountproduct] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(meta.sell_count || '');
   const [sellproducts, setSellProducts] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)([]);
   // console.log(typeof(sellcountproduct));
 
+  // load when page reload
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
     setproductmetavalue(sellcountproduct);
   }, []);
+
+  // get products using rest api
   const setproductmetavalue = value => {
     setAttributes({
       mostsellvalue: value
@@ -166,13 +195,6 @@ function Edit({
       });
     }
   };
-
-  // wp.data.dispatch('core/editor').editPost({
-  // 	meta: {
-  // 		mostsellproducts: 'this is the meta'
-  // 	}
-  // });
-
   const onChangeContent = newContent => {
     setAttributes({
       content: newContent
@@ -208,12 +230,13 @@ function Edit({
       hasLinkNofollow: !hasLinkNofollow
     });
   };
-  const blockcount = wp.data.select('core/block-editor').getBlocks().length;
+
+  // const blockcount = wp.data.select('core/block-editor').getBlocks().length;
   // wp.data.select("core/block-editor").getBlockCount()
 
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...(0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)()
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Block Count: ", blockcount), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.AlignmentControl, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.BlockControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.AlignmentControl, {
     value: attributes.align,
     onChange: onChangeAlign
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelBody, {
@@ -221,11 +244,16 @@ function Edit({
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.PanelRow, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("ul", null, sellproducts && sellproducts.length > 0 ? sellproducts.map(product => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", {
     key: product.id
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("b", null, "TITLE:"), " ", product.name, " (", product.sell_count, ")")) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("li", null, "No products found"))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.TextControl, {
+    label: "My Custom Field",
+    value: fieldValue,
+    onChange: newValue => field.setValue(newValue)
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.TextControl, {
     label: "Most Sell Products",
     value: sellcountproduct,
     onChange: value => {
       setSellcountproduct(value);
       setproductmetavalue(value);
+      setmetavalue(value);
     }
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_6__.SelectControl, {
     label: "Custom Taxonomy",
